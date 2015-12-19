@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Even Chang',  'Luis Herrera', 'Katy Lee', 'Frank Lee']
   s.email       = ['kiki44552002@gmail.com', 'lmherrera86@gmail.com', 'katylee41024@yahoo.com.tw','frank1234211@gmail.com']
   s.files       = ["lib/stylemooncat.rb", "lib/stylemooncat/scraper.rb"]
-  s.executables = ['stylemooncat']
+  s.executables = ['stylemooncat.rb']
   s.homepage    = 'http://rubygems.org/gems/stylemooncat'
   s.license       = 'MIT'
 end

@@ -1,1 +1,14 @@
-require_relative '../lib/stylemooncat.rb'
+#!/usr/bin/env ruby
+
+require 'codebadges'                       # for production
+# require '../lib/codebadges/badges.rb'     # for cmd line testing purposes
+
+fail ArgumentError, "Usage:  codebadges [username]\n" if ARGV.count == 0
+
+username = ARGV[0]
+badges_found = CodeBadges::CodecademyBadges.new(username).badges
+
+puts "#{username} has collected #{badges_found.size} badges."
+badges_found.each do |title, date|
+  puts "Earned '#{title}' on #{date}."
+end
