@@ -69,7 +69,7 @@ module StyleMoonCat
     end
 
     def fetch_data(uri)
-      puts uri
+    #  puts uri
       open(uri) {|file| file.read}
     end
 
@@ -111,7 +111,7 @@ module StyleMoonCat
       else #no discount
             result = priceString
       end
-      puts result
+
       result
     end
 
