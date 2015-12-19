@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'stylemooncat'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2015-12-19'
   s.summary     = 'Scraper for StyleMoonCat'
   s.description = "This is a gem scraping StyleMoonCat's website.Input category name and page number,and it will return the items with title,price,image,and link in the page of the category"
