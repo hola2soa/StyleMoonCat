@@ -29,6 +29,8 @@ results = scraper.scrape("top",1)
 Please see http://www.stylemooncat.com.tw/ , category can be 'allitems','newarrival','lastweek','specialdiscount','top','bottom','outer','shose','bag', or 'accessories'
 
 The result of format is like:
+````
 {:title=>"立領坑條細織背心*9色", :price=>"280", :images=>"/photo/01080327/01080327.jpg", :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24125-dn"}
 {:title=>"羅紋立領合身毛衣*4色", :price=>"330", :images=>"/photo/01110084/01110084.jpg", :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24724"}
 {:title=>"尖頭壓紋平底跟鞋*2色", :price=>"540", :images=>"/photo/09070006/09070006.jpg", :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24732"}
+````
