@@ -13,7 +13,7 @@ module StyleMoonCat
     @@LAST_WEEK_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090002"
     @@SPECIAL_DISCOUNT_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090003"
 
-    @@ALL_ITEMS_URI  = "#{@@BASE_URI}/PDList.asp?item1=00"
+    @@ALL_ITEMS_URI  = "#{@@BASE_URI}/PDList.asp?p1=00"
     @@TOP_URI  = "#{@@BASE_URI}/PDList.asp?p1=01"
     @@BOTTOM_URI = "#{@@BASE_URI}/PDList.asp?p1=02"
     @@OUTER_URI = "#{@@BASE_URI}/PDList.asp?p1=03"
@@ -33,7 +33,7 @@ module StyleMoonCat
     # Regular ?
     @@TITLE_REGEX = /([．\p{Han}[a-zA-Z]]+)/
 
-    def scrape(category,page)
+    def get_scrape_result(category,page)
       case category
       when "newarrival"
             uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
@@ -58,6 +58,68 @@ module StyleMoonCat
       else
             uri  = uri_with_page(@@ALL_ITEMS_URI, page)
       end
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+
+
+    def get_new_arrival(page)
+      uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_last_week(page)
+      uri  = uri_with_page(@@LAST_WEEK_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_special_discount(page)
+      uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_top(page)
+      uri  = uri_with_page(@@TOP_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_bottom(page)
+      uri  = uri_with_page(@@BOTTOM_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_outer(page)
+      uri  = uri_with_page(@@OUTER_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_dress(page)
+      uri  = uri_with_page(@@DRESS_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_shoes(page)
+      uri  = uri_with_page(@@SHOES_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_bag(page)
+      uri  = uri_with_page(@@BAG_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_accessories(page)
+      uri  = uri_with_page(@@ACCESSORIES_URI, page)
       body = fetch_data(uri)
       filter(body)
     end
