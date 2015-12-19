@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'oga'
 require 'open-uri'
+require 'open-uri-s3'
 
 # scrape data
 module StyleMoonCat
@@ -9,18 +10,24 @@ module StyleMoonCat
     @@BASE_URI = 'http://www.stylemooncat.com.tw'
 
     @@NEW_ARRIVALS_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090001"
+    @@LAST_WEEK_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090002"
+    @@SPECIAL_DISCOUNT_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090003"
 
     @@TOP_URI  = "#{@@BASE_URI}/PDList.asp?p1=01"
     @@BOTTOM_URI = "#{@@BASE_URI}/PDList.asp?p1=02"
     @@OUTER_URI = "#{@@BASE_URI}/PDList.asp?p1=03"
     @@DRESS_URI = "#{@@BASE_URI}/PDList.asp?p1=04"
+    @@SHOES_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=01"
+    @@BAG_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=02"
+    @@ACCESSORIES_URI = "#{@@BASE_URI}/PDList.asp?p1=06"
 
   # Selectors
-    @@ITEM_XPATH      = "//div[contains(@class, 'goodsBox')]/div[contains(@class, 'good1')]"
-    @@LINK_XPATH      = '/a'  # or a?
-    @@IMAGE_XPATH    = "/a/img" # or a/img?
-    @@TITLE_XPATH     = "/div[contains(@class, 'pd_info_1')]"
-    @@PRICE_XPATH    = "/div[contains(@class, 'pd_info_1')]/span"
+    @@ITEM_XPATH      = "//div[contains(@class, 'goodsBox')]/div[contains(@class, 'goodl')]"
+    @@LINK_XPATH      = 'a'
+    @@IMAGE_XPATH    = "a/img"
+    @@TITLE_XPATH     = "div[contains(@class, 'pd_info_l')]"    # /div[contains(@class, 'pd_info_l')]   is wrong
+    @@PRICE_SPAN_XPATH    = "div[contains(@class, 'pd_info_l')]/span"
+    @@PRICE_STRIKE_XPATH    = "div[contains(@class, 'pd_info_l')]/strike"
 
     # Regular ?
     @@TITLE_REGEX = /([．\p{Han}[a-zA-Z]]+)/
@@ -31,16 +38,73 @@ module StyleMoonCat
       filter(body)
     end
 
+    def get_last_week(page)
+      uri  = uri_with_page(@@LAST_WEEK_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_special_discount(page)
+      uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_top(page)
+      uri  = uri_with_page(@@TOP_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_bottom(page)
+      uri  = uri_with_page(@@BOTTOM_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_outer(page)
+      uri  = uri_with_page(@@OUTER_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_dress(page)
+      uri  = uri_with_page(@@DRESS_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_shoes(page)
+      uri  = uri_with_page(@@SHOES_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_bag(page)
+      uri  = uri_with_page(@@BAG_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+    def get_accessories(page)
+      uri  = uri_with_page(@@ACCESSORIES_URI, page)
+      body = fetch_data(uri)
+      filter(body)
+    end
+
+
     private
     def uri_with_page(uri, page)
       "#{uri}&pageno=#{page}"
     end
 
     def fetch_data(uri)
+      puts uri
       open(uri) {|file| file.read}
     end
 
     def filter(raw)
+    #  puts Oga.parse_html(raw).xpath(@@ITEM_XPATH).map { |item| parse(item) }
       Oga.parse_html(raw)
          .xpath(@@ITEM_XPATH)
          .map { |item| parse(item) }
@@ -56,20 +120,33 @@ module StyleMoonCat
     end
 
     def extract_title(item)
-      item.xpath(@@TITLE_XPATH).text
-
-    #  item.xpath(@@TITLE_SELECTOR).text
-    #      .scan(@@TITLE_REGEX)
-    #      .flatten[0]
+        item.xpath(@@TITLE_XPATH).text.split("TWD")[0]
     end
 
     def extract_price(item)
-       item.xpath(@@PRICE_XPATH).text     # TWD.
-    #  item.xpath(@@PRICE_XPATH).text.to_i
+
+      # if there is discount, priceString format is "originPirce sellingPrice"
+      # .split(' ') is fail. so use this method to extract sellingPrice
+      priceString = item.xpath(@@TITLE_XPATH).text.split("TWD.")[1]
+      length = priceString.length
+      if length ==8 || length ==9  #ex: priceString ==  "1200 990"   or "1200 1100"
+          space = priceString[4]
+          result = priceString.split(space)[1]
+      elsif length ==7 || length ==6 #ex: priceString == "999 990"  or   "120 99"
+          space = priceString[3]
+          result = priceString.split(space)[1]
+      elsif length ==5 #ex: priceString == "99 90"
+            space = priceString[2]
+            result = priceString.split(space)[1]
+      else #no discount
+            result = priceString
+      end
+      puts result
+      result
     end
 
     def extract_images(item)
-      item.xpath(@@IMAGE_SELECTOR).attribute(:src).first.value
+      item.xpath(@@IMAGE_XPATH).attribute(:src).first.value
     end
 
     def extract_link(item)
