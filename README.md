@@ -14,7 +14,7 @@ Or else put it in your `Gemfile` as:
 gem stylemooncat
 ```
 
-Run it from the command line:
+1.Run it from the command line:
 ```
 $ stylemooncat #{category} #{page} #{keyword} #{price_from} #{price_to}
 ```
@@ -23,16 +23,16 @@ For example, to get the items which are in page 1 of 'top' category ,its title c
 $ stylemooncat top 1 MOONCAT 400 500
 ```
 
-if you don't want search by keyword, let keyword be "none":
+If you don't want search by keyword, let keyword be "none":
 ```
 $ stylemooncat top 1 none 400 500
 ```
 
-if you don't want search by category, let category be "allitems":
+If you don't want search by category, let category be "allitems":
 ```
 $ stylemooncat allitems 1 MOONCAT 400 500
 ```
-if you don't want search by price range, let price_from or price_to be -1 or ignore these parameters
+If you don't want search by price range, let price_from or price_to be -1 or ignore these parameters
 ```
 $ stylemooncat allitems 1 MOONCAT -1 -1
 ```
@@ -43,15 +43,14 @@ $ stylemooncat allitems 1 MOONCAT
 
 
 
-Use it from your Ruby code:
-Similar with the above
+2.Use it from your Ruby code(similar with the above):
 
 Get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
 
 ````ruby
 require 'stylemooncat'
 scraper = StyleMoonCat::Scraper.new
-# #{category} ,#{page} ,#{keyword} ,#{price_from}, #{price_to}   ,  #{price_from} <= #{price_to}
+# scrape(#{category} ,#{page} ,#{keyword} ,#{price_from}, #{price_to}) ,and #{price_from} should <= #{price_to}
 results = scraper.scrape("top",1,"MOONCAT",400,500)
 ````
 
