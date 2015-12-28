@@ -14,19 +14,64 @@ Or else put it in your `Gemfile` as:
 gem stylemooncat
 ```
 
-Run it from the command line. For example, to get the items in page 1 of 'top' category:
+Run it from the command line:
 ```
-$ stylemooncat top 1
+$ stylemooncat #{category} #{page} #{keyword} #{price_from} #{price_to}
+```
+For example, to get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
+```
+$ stylemooncat top 1 MOONCAT 400 500
 ```
 
-or use it from your Ruby code:
+if you don't want search by keyword, let keyword be "none":
+```
+$ stylemooncat top 1 none 400 500
+```
+
+if you don't want search by category, let category be "allitems":
+```
+$ stylemooncat allitems 1 MOONCAT 400 500
+```
+if you don't want search by price range, let price_from or price_to be -1 or ignore these parameters
+```
+$ stylemooncat allitems 1 MOONCAT -1 -1
+```
+or
+```
+$ stylemooncat allitems 1 MOONCAT
+```
+
+
+
+Use it from your Ruby code:
+Similar with the above
+
+Get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
+
 ````ruby
 require 'stylemooncat'
 scraper = StyleMoonCat::Scraper.new
-results = scraper.scrape("top",1)
+# #{category} ,#{page} ,#{keyword} ,#{price_from}, #{price_to}   ,  #{price_from} <= #{price_to}
+results = scraper.scrape("top",1,"MOONCAT",400,500)
 ````
 
 Please see http://www.stylemooncat.com.tw/ , category can be 'allitems','newarrival','lastweek','specialdiscount','top','bottom','outer','shose','bag', or 'accessories'
+
+If you don't want search by keyword, let keyword be "none":
+````
+results = scraper.scrape("top",1,"none",400,500)
+````
+
+If you don't want search by price range, let price_from or price_to be -1
+```
+results = scraper.scrape("top",1,"MOONCAT",-1,-1)
+```
+
+If you don't want search by category, let category be 'allitems'
+```
+results = scraper.scrape("allitems",1,"MOONCAT",400,500)
+```
+
 
 The result of format is like:
 ````
