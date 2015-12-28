@@ -33,7 +33,7 @@ module StyleMoonCat
     # Regular ?
     @@TITLE_REGEX = /([．\p{Han}[a-zA-Z]]+)/
 
-    def scrape(category,page)
+    def scrape(category,page,keyword,price_from,price_to)
       case category
       when "newarrival"
             uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
@@ -58,12 +58,27 @@ module StyleMoonCat
       else
             uri  = uri_with_page(@@ALL_ITEMS_URI, page)
       end
+
+      if (keyword != "none") &&  (keyword != nil)
+          uri = uri_with_keyword(uri,keyword)
+      end
+      puts uri
       body = fetch_data(uri)
-      filter(body)
+      filter_results = filter(body)
+      #filter with price if there are correct price parameters
+      if price_to!=nil && price_from!=nil && price_to.to_i >=price_from.to_i  && price_from.to_i !=-1 && price_to.to_i !=-1
+        return filter_results.select{|x| x[:price].to_i<=price_to.to_i && x[:price].to_i>=price_from.to_i }
+      else
+        return filter_results
+      end
     end
 
 
     private
+    def uri_with_keyword(uri, keyword)
+      "#{uri}&keyword=#{keyword}"
+    end
+
     def uri_with_page(uri, page)
       "#{uri}&pageno=#{page}"
     end
