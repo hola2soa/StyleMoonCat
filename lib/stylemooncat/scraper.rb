@@ -56,6 +56,38 @@ module StyleMoonCat
     # Regular ?
     @@TITLE_REGEX = /([．\p{Han}[a-zA-Z]]+)/
 
+    @@IsScrpeColor=0;
+
+    @@COLOR_ITEM_XPATH = "//option"
+
+    def scrape_contain_color(category,page,keyword,price_from,price_to)
+        @@IsScrapeColor=1
+        filter_results = scrape(category,page,keyword,price_from,price_to)
+        filter_results_with_color = filter_results.each do |x|
+          #  puts x[:link]
+            body = fetch_data(x[:link])
+            color = color_extract(body)
+            x[:colors]=  color
+        end
+
+        return filter_results_with_color
+    end
+
+    def color_extract(raw)
+    #  puts Oga.parse_html(raw).xpath(@@ITEM_XPATH).map { |item| parse(item) }
+      result = Oga.parse_html(raw)
+         .xpath(@@COLOR_ITEM_XPATH)
+         .select { |item| item.text.length >4  }
+         .map { |item| color_parse(item) }
+         .uniq
+      return result
+    end
+
+
+    def color_parse(item)
+        item.text.split(" ")[0].split("：")[1]
+    end
+
     def scrape(category,page,keyword,price_from,price_to)
       case category
       when "newarrival"
@@ -134,7 +166,7 @@ module StyleMoonCat
       if (keyword != "none") &&  (keyword != nil)
           uri = uri_with_keyword(uri,keyword)
       end
-      puts uri
+    #  puts uri
       body = fetch_data(uri)
       filter_results = filter(body)
       #filter with price if there are correct price parameters
@@ -156,7 +188,6 @@ module StyleMoonCat
     end
 
     def fetch_data(uri)
-    #  puts uri
       open(uri) {|file| file.read}
     end
 
