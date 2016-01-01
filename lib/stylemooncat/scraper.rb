@@ -15,13 +15,36 @@ module StyleMoonCat
 
     @@ALL_ITEMS_URI  = "#{@@BASE_URI}/PDList.asp?item1=00"
     @@TOP_URI  = "#{@@BASE_URI}/PDList.asp?p1=01"
+      @@TOPS_Clothes_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=01"
+      @@TOPS_Tshirt_URI  = "#{@@BASE_URI}/PDList.asp?p1=011&p2=02"
+      @@TOPS_Vest_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=03"
+      @@TOPS_Blouse_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=04"
+      @@TOPS_Knit_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=05"
     @@BOTTOM_URI = "#{@@BASE_URI}/PDList.asp?p1=02"
+      @@BOTTOM_Pants_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=01"
+      @@BOTTOM_Skirts_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=02"
     @@OUTER_URI = "#{@@BASE_URI}/PDList.asp?p1=03"
+      @@OUTER_Coat_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=01"
+      @@OUTER_Jacket_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=02"
+      @@OUTER_Knit_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=01"
+      @@OUTER_Vest_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=02"
     @@DRESS_URI = "#{@@BASE_URI}/PDList.asp?p1=04"
-    @@SHOES_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=01"
-    @@BAG_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=02"
+    @@SHOES_AND_BAGS_URI = "#{@@BASE_URI}/PDList.asp?p1=05"
+      @@SHOES_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=01"
+      @@BAG_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=02"
     @@ACCESSORIES_URI = "#{@@BASE_URI}/PDList.asp?p1=06"
-
+      @@ACCESSORIES_Watch_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=01"
+      @@ACCESSORIES_Necklace_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=02"
+      @@ACCESSORIES_Ring_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=03"
+      @@ACCESSORIES_Bracelet_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=04"
+      @@ACCESSORIES_Earring_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=05"
+      @@ACCESSORIES_Muffler_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=06"
+      @@ACCESSORIES_Belt_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=07"
+      @@ACCESSORIES_Haircap_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=08"
+      @@ACCESSORIES_Glasses_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=09"
+      @@ACCESSORIES_Socks_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=10"
+      @@ACCESSORIES_Underwear_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=11"
+      @@ACCESSORIES_Others_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=12"
   # Selectors
     @@ITEM_XPATH      = "//div[contains(@class, 'goodsBox')]/div[contains(@class, 'goodl')]"
     @@LINK_XPATH      = 'a'
@@ -43,18 +66,67 @@ module StyleMoonCat
             uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
       when "top"
             uri  = uri_with_page(@@TOP_URI, page)
+          when "tops_clothes"
+                uri  = uri_with_page(@@TOPS_Clothes_URI, page)
+          when "top_Tshirt"
+                uri  = uri_with_page(@@TOPS_Tshirt_URI, page)
+          when "top_vest"
+                uri  = uri_with_page(@@TOPS_Vest_URI, page)
+          when "top_blouse"
+                uri  = uri_with_page(@@TOPS_Blouse_URI, page)
+          when "top_knit"
+                uri  = uri_with_page(@@TOPS_Knit_URI, page)
       when "bottom"
             uri  = uri_with_page(@@BOTTOM_URI, page)
+          when "bottom_pants"
+                uri  = uri_with_page(@@BOTTOM_Pants_URI, page)
+          when "bottom_skirts"
+                uri  = uri_with_page(@@BOTTOM_Skirts_URI, page)
       when "outer"
             uri  = uri_with_page(@@OUTER_URI, page)
+          when "outer_coat"
+                uri  = uri_with_page(@@OUTER_Coat_URI, page)
+          when "outer_jacket"
+                uri  = uri_with_page(@@OUTER_Jacket_URI, page)
+          when "outer_knit"
+                uri  = uri_with_page(@@OUTER_Knit_URI, page)
+          when "outer_vest"
+                uri  = uri_with_page(@@OUTER_Vest_URI, page)
+
       when "dress"
             uri  = uri_with_page(@@DRESS_URI, page)
-      when "shose"
-            uri  = uri_with_page(@@SHOES_URI, page)
-      when "bag"
-            uri  = uri_with_page(@@BAG_URI, page)
+      when "shoes_and_bag"
+            uri  = uri_with_page(@@SHOES_AND_BAGS_URI, page)
+          when "shose"
+                uri  = uri_with_page(@@SHOES_URI, page)
+          when "bag"
+                uri  = uri_with_page(@@BAG_URI, page)
       when "accessories"
             uri  = uri_with_page(@@ACCESSORIES_URI, page)
+          when "accessories_watch"
+                uri  = uri_with_page(@@ACCESSORIES_Watch_URI, page)
+          when "accessories_necklace"
+                uri  = uri_with_page(@@ACCESSORIES_Necklace_URI, page)
+          when "accessories_ring"
+                uri  = uri_with_page(@@ACCESSORIES_Ring_URI, page)
+          when "accessories_bracelet"
+                uri  = uri_with_page(@@ACCESSORIES_Bracelet_URI, page)
+          when "accessories_earring"
+                uri  = uri_with_page(@@ACCESSORIES_Earring_URI, page)
+          when "accessories_muffler"
+                uri  = uri_with_page(@@ACCESSORIES_Muffler_URI, page)
+          when "accessories_belt"
+                uri  = uri_with_page(@@ACCESSORIES_Belt_URI, page)
+          when "accessories_haircap"
+                uri  = uri_with_page(@@ACCESSORIES_Haircap_URI, page)
+          when "accessories_glasses"
+              uri  = uri_with_page(@@ACCESSORIES_Glasses_URI, page)
+          when "accessories_socks"
+              uri  = uri_with_page(@@ACCESSORIES_Socks_URI, page)
+          when "accessories_underwear"
+              uri  = uri_with_page(@@ACCESSORIES_Underwear_URI, page)
+          when "accessories_others"
+              uri  = uri_with_page(@@ACCESSORIES_Others_URI, page)
       else
             uri  = uri_with_page(@@ALL_ITEMS_URI, page)
       end
