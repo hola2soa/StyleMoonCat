@@ -18,40 +18,50 @@ gem stylemooncat
 ```
 $ stylemooncat #{category} #{page} #{keyword} #{price_from} #{price_to}
 ```
-For example, to get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
+For example, to get the items which page limit is 2, 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
 ```
-$ stylemooncat top 1 MOONCAT 400 500
+$ stylemooncat top 2 MOONCAT 400 500
 ```
 
 If you don't want search by keyword, let keyword be "none":
 ```
-$ stylemooncat top 1 none 400 500
+$ stylemooncat top 2 none 400 500
 ```
 
 If you don't want search by category, let category be "allitems":
 ```
-$ stylemooncat allitems 1 MOONCAT 400 500
+$ stylemooncat allitems 2 MOONCAT 400 500
 ```
 If you don't want search by price range, let price_from or price_to be -1 or ignore these parameters
 ```
-$ stylemooncat allitems 1 MOONCAT -1 -1
+$ stylemooncat allitems 2 MOONCAT -1 -1
 ```
 or
 ```
-$ stylemooncat allitems 1 MOONCAT
+$ stylemooncat allitems 2 MOONCAT
 ```
 
 
 
 ### Use it from your Ruby code(similar with the above):
 
-Get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
+Get the items which page limit is 2 , 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
 
 ````ruby
 require 'stylemooncat'
 scraper = StyleMoonCat::Scraper.new
 # scrape(#{category} ,#{page} ,#{keyword} ,#{price_from}, #{price_to}) ,and #{price_from} should <= #{price_to}
-results = scraper.scrape("top",1,"MOONCAT",400,500)
+options ={}
+options[:page_limit]=2
+
+price_boundary=[]
+price_boundary.push(400)
+price_boundary.push(500)
+
+options[:keyword]='MOONCAT'
+options[:price_boundary]=price_boundary
+
+results = scraper.scrape("top",options)
 ````
 
 Please see http://www.stylemooncat.com.tw/ , category can be
@@ -71,20 +81,11 @@ If string of category is none of all above, it regard as 'allitems'.
 There is no product in most of subcategories of ACCESSORIES.
 
 
-If you don't want search by keyword, let keyword be "none":
-````
-results = scraper.scrape("top",1,"none",400,500)
-````
+If you don't want search by keyword, let options[:keyword] be "none":
 
-If you don't want search by price range, let price_from or price_to be -1
-```
-results = scraper.scrape("top",1,"MOONCAT",-1,-1)
-```
+If you don't want search by price range,price_boundary.push(-1)
 
 If you don't want search by category, let category be 'allitems'
-```
-results = scraper.scrape("allitems",1,"MOONCAT",400,500)
-```
 
 
 The result of format is like:
