@@ -66,7 +66,7 @@ module StyleMoonCat
             uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
       when "top"
             uri  = uri_with_page(@@TOP_URI, page)
-          when "tops_clothes"
+          when "top_clothes"
                 uri  = uri_with_page(@@TOPS_Clothes_URI, page)
           when "top_Tshirt"
                 uri  = uri_with_page(@@TOPS_Tshirt_URI, page)

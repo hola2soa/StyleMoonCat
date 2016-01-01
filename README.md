@@ -54,7 +54,20 @@ scraper = StyleMoonCat::Scraper.new
 results = scraper.scrape("top",1,"MOONCAT",400,500)
 ````
 
-Please see http://www.stylemooncat.com.tw/ , category can be 'allitems','newarrival','lastweek','specialdiscount','top','bottom','outer','shose','bag', or 'accessories'
+Please see http://www.stylemooncat.com.tw/ , category can be
+'allitems',
+'newarrival',
+'lastweek',
+'specialdiscount',
+'top',     'top_clothes','top_Tshirt','top_vest','top_blouse','top_knit'
+'bottom',  'bottom_pants' ,'bottom_skirts'
+'outer',   'outer_coat','outer_knit','outer_vest','outer_jacket'
+'shoes_and_bag', 'shose','bag',
+'accessories' ,  'accessories_watch','accessories_necklace','accessories_ring','accessories_bracelet',
+                'accessories_earring','accessories_muffler','accessories_belt','accessories_haircap',
+                'accessories_glasses','accessories_socks','accessories_underwear',accessories_others'
+#There is no product in most of subcategories of ACCESSORIES
+
 
 If you don't want search by keyword, let keyword be "none":
 ````
