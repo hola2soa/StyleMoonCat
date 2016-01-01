@@ -14,7 +14,7 @@ Or else put it in your `Gemfile` as:
 gem stylemooncat
 ```
 
-1.Run it from the command line:
+### Run it from the command line:
 ```
 $ stylemooncat #{category} #{page} #{keyword} #{price_from} #{price_to}
 ```
@@ -43,7 +43,7 @@ $ stylemooncat allitems 1 MOONCAT
 
 
 
-2.Use it from your Ruby code(similar with the above):
+### Use it from your Ruby code(similar with the above):
 
 Get the items which are in page 1 of 'top' category ,its title contains 'MOONCAT' ,its price range is from $400 to $500:
 
@@ -66,7 +66,9 @@ Please see http://www.stylemooncat.com.tw/ , category can be
 'accessories' ,  'accessories_watch','accessories_necklace','accessories_ring','accessories_bracelet',
                 'accessories_earring','accessories_muffler','accessories_belt','accessories_haircap',
                 'accessories_glasses','accessories_socks','accessories_underwear',accessories_others'
-#There is no product in most of subcategories of ACCESSORIES
+
+If string of category is none of all above, it regard as 'allitems'.
+There is no product in most of subcategories of ACCESSORIES.
 
 
 If you don't want search by keyword, let keyword be "none":
