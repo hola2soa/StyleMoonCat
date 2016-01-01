@@ -100,8 +100,8 @@ The result of format is like:
 
 If you want searching result which contain color information
 results = scraper.scrape_contain_color("top",options)
+The result of format is like:  (If certain color of certain item is sold out,it will not show)
 ````
-The result of format is like:
 {:title=>"尖頭壓紋平底跟鞋*2色", :price=>"540", :images=>["/photo/09070006/09070006.jpg"], :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24732", :colors=>["黑", "裸杏"]}
 {:title=>"尖頭繫帶粗跟鞋*4色", :price=>"540", :images=>["/photo/09050015/09050015.jpg"], :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24731", :colors=>["黑", "酒紅", "裸"]}
 {:title=>"磨砂材質懶人鞋*2色", :price=>"590", :images=>["/photo/09010016/09010016.jpg"], :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24820", :colors=>["黑", "咖"]}
