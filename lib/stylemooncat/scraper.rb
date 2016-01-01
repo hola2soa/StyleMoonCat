@@ -106,7 +106,7 @@ module StyleMoonCat
       end
       @filter_results=[]
       @count=1
-      1.upto(page_limit) do
+      1.upto(page_limit.to_i) do
         page =  @count
         case category
         when "newarrival"
@@ -265,7 +265,9 @@ module StyleMoonCat
     end
 
     def extract_images(item)
-      item.xpath(@@IMAGE_XPATH).attribute(:src).first.value
+      result=[]
+      result.push(item.xpath(@@IMAGE_XPATH).attribute(:src).first.value)
+
     end
 
     def extract_link(item)
