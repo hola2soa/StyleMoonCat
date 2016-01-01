@@ -60,9 +60,9 @@ module StyleMoonCat
 
     @@COLOR_ITEM_XPATH = "//option"
 
-    def scrape_contain_color(category,page,keyword,price_from,price_to)
+    def scrape_contain_color(category,options)
         @@IsScrapeColor=1
-        filter_results = scrape(category,page,keyword,price_from,price_to)
+        filter_results = scrape(category,options)
         filter_results_with_color = filter_results.each do |x|
           #  puts x[:link]
             body = fetch_data(x[:link])
@@ -83,97 +83,128 @@ module StyleMoonCat
       return result
     end
 
-
     def color_parse(item)
         item.text.split(" ")[0].split("：")[1]
     end
 
-    def scrape(category,page,keyword,price_from,price_to)
-      case category
-      when "newarrival"
-            uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
-      when "lastweek"
-            uri  = uri_with_page(@@LAST_WEEK_URI, page)
-      when "specialdiscount"
-            uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
-      when "top"
-            uri  = uri_with_page(@@TOP_URI, page)
-          when "top_clothes"
-                uri  = uri_with_page(@@TOPS_Clothes_URI, page)
-          when "top_Tshirt"
-                uri  = uri_with_page(@@TOPS_Tshirt_URI, page)
-          when "top_vest"
-                uri  = uri_with_page(@@TOPS_Vest_URI, page)
-          when "top_blouse"
-                uri  = uri_with_page(@@TOPS_Blouse_URI, page)
-          when "top_knit"
-                uri  = uri_with_page(@@TOPS_Knit_URI, page)
-      when "bottom"
-            uri  = uri_with_page(@@BOTTOM_URI, page)
-          when "bottom_pants"
-                uri  = uri_with_page(@@BOTTOM_Pants_URI, page)
-          when "bottom_skirts"
-                uri  = uri_with_page(@@BOTTOM_Skirts_URI, page)
-      when "outer"
-            uri  = uri_with_page(@@OUTER_URI, page)
-          when "outer_coat"
-                uri  = uri_with_page(@@OUTER_Coat_URI, page)
-          when "outer_jacket"
-                uri  = uri_with_page(@@OUTER_Jacket_URI, page)
-          when "outer_knit"
-                uri  = uri_with_page(@@OUTER_Knit_URI, page)
-          when "outer_vest"
-                uri  = uri_with_page(@@OUTER_Vest_URI, page)
+    def scrape(category,options)
+      keyword= options[:keyword]
+      page_limit=options[:page_limit]
+      puts options
 
-      when "dress"
-            uri  = uri_with_page(@@DRESS_URI, page)
-      when "shoes_and_bag"
-            uri  = uri_with_page(@@SHOES_AND_BAGS_URI, page)
-          when "shose"
-                uri  = uri_with_page(@@SHOES_URI, page)
-          when "bag"
-                uri  = uri_with_page(@@BAG_URI, page)
-      when "accessories"
-            uri  = uri_with_page(@@ACCESSORIES_URI, page)
-          when "accessories_watch"
-                uri  = uri_with_page(@@ACCESSORIES_Watch_URI, page)
-          when "accessories_necklace"
-                uri  = uri_with_page(@@ACCESSORIES_Necklace_URI, page)
-          when "accessories_ring"
-                uri  = uri_with_page(@@ACCESSORIES_Ring_URI, page)
-          when "accessories_bracelet"
-                uri  = uri_with_page(@@ACCESSORIES_Bracelet_URI, page)
-          when "accessories_earring"
-                uri  = uri_with_page(@@ACCESSORIES_Earring_URI, page)
-          when "accessories_muffler"
-                uri  = uri_with_page(@@ACCESSORIES_Muffler_URI, page)
-          when "accessories_belt"
-                uri  = uri_with_page(@@ACCESSORIES_Belt_URI, page)
-          when "accessories_haircap"
-                uri  = uri_with_page(@@ACCESSORIES_Haircap_URI, page)
-          when "accessories_glasses"
-              uri  = uri_with_page(@@ACCESSORIES_Glasses_URI, page)
-          when "accessories_socks"
-              uri  = uri_with_page(@@ACCESSORIES_Socks_URI, page)
-          when "accessories_underwear"
-              uri  = uri_with_page(@@ACCESSORIES_Underwear_URI, page)
-          when "accessories_others"
-              uri  = uri_with_page(@@ACCESSORIES_Others_URI, page)
+      if options[:price_boundary]!= nil && options[:price_boundary].length ==2
+          if options[:price_boundary][0].to_i>options[:price_boundary][1].to_i
+              price_from = options[:price_boundary][1]
+              price_to = options[:price_boundary][0]
+          else
+              price_from = options[:price_boundary][0]
+              price_to = options[:price_boundary][1]
+          end
       else
-            uri  = uri_with_page(@@ALL_ITEMS_URI, page)
+          price_from = -1
+          price_to = -1
       end
+      @filter_results=[]
+      @count=1
+      1.upto(page_limit) do
+        page =  @count
+        case category
+        when "newarrival"
+              uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
+        when "lastweek"
+              uri  = uri_with_page(@@LAST_WEEK_URI, page)
+        when "specialdiscount"
+              uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
+        when "top"
+              uri  = uri_with_page(@@TOP_URI, page)
+            when "top_clothes"
+                  uri  = uri_with_page(@@TOPS_Clothes_URI, page)
+            when "top_Tshirt"
+                  uri  = uri_with_page(@@TOPS_Tshirt_URI, page)
+            when "top_vest"
+                  uri  = uri_with_page(@@TOPS_Vest_URI, page)
+            when "top_blouse"
+                  uri  = uri_with_page(@@TOPS_Blouse_URI, page)
+            when "top_knit"
+                  uri  = uri_with_page(@@TOPS_Knit_URI, page)
+        when "bottom"
+              uri  = uri_with_page(@@BOTTOM_URI, page)
+            when "bottom_pants"
+                  uri  = uri_with_page(@@BOTTOM_Pants_URI, page)
+            when "bottom_skirts"
+                  uri  = uri_with_page(@@BOTTOM_Skirts_URI, page)
+        when "outer"
+              uri  = uri_with_page(@@OUTER_URI, page)
+            when "outer_coat"
+                  uri  = uri_with_page(@@OUTER_Coat_URI, page)
+            when "outer_jacket"
+                  uri  = uri_with_page(@@OUTER_Jacket_URI, page)
+            when "outer_knit"
+                  uri  = uri_with_page(@@OUTER_Knit_URI, page)
+            when "outer_vest"
+                  uri  = uri_with_page(@@OUTER_Vest_URI, page)
 
-      if (keyword != "none") &&  (keyword != nil)
-          uri = uri_with_keyword(uri,keyword)
+        when "dress"
+              uri  = uri_with_page(@@DRESS_URI, page)
+        when "shoes_and_bag"
+              uri  = uri_with_page(@@SHOES_AND_BAGS_URI, page)
+            when "shoes"
+                  uri  = uri_with_page(@@SHOES_URI, page)
+            when "bag"
+                  uri  = uri_with_page(@@BAG_URI, page)
+        when "accessories"
+              uri  = uri_with_page(@@ACCESSORIES_URI, page)
+            when "accessories_watch"
+                  uri  = uri_with_page(@@ACCESSORIES_Watch_URI, page)
+            when "accessories_necklace"
+                  uri  = uri_with_page(@@ACCESSORIES_Necklace_URI, page)
+            when "accessories_ring"
+                  uri  = uri_with_page(@@ACCESSORIES_Ring_URI, page)
+            when "accessories_bracelet"
+                  uri  = uri_with_page(@@ACCESSORIES_Bracelet_URI, page)
+            when "accessories_earring"
+                  uri  = uri_with_page(@@ACCESSORIES_Earring_URI, page)
+            when "accessories_muffler"
+                  uri  = uri_with_page(@@ACCESSORIES_Muffler_URI, page)
+            when "accessories_belt"
+                  uri  = uri_with_page(@@ACCESSORIES_Belt_URI, page)
+            when "accessories_haircap"
+                  uri  = uri_with_page(@@ACCESSORIES_Haircap_URI, page)
+            when "accessories_glasses"
+                uri  = uri_with_page(@@ACCESSORIES_Glasses_URI, page)
+            when "accessories_socks"
+                uri  = uri_with_page(@@ACCESSORIES_Socks_URI, page)
+            when "accessories_underwear"
+                uri  = uri_with_page(@@ACCESSORIES_Underwear_URI, page)
+            when "accessories_others"
+                uri  = uri_with_page(@@ACCESSORIES_Others_URI, page)
+        else
+              uri  = uri_with_page(@@ALL_ITEMS_URI, page)
+        end
+
+        if (keyword != "none") &&  (keyword != nil)
+            uri = uri_with_keyword(uri,keyword)
+        end
+      #  puts uri
+        body = fetch_data(uri)
+        @filter_results  = filter(body)
+
+        if @count==1
+            @combine_filter_results = @filter_results
+            @count +=1
+        else
+          if @filter_results.length>0
+            @combine_filter_results=  @final_filter_results.concat(@filter_results)
+          end
+        end
       end
-    #  puts uri
-      body = fetch_data(uri)
-      filter_results = filter(body)
+      @count=1
+
       #filter with price if there are correct price parameters
       if price_to!=nil && price_from!=nil && price_to.to_i >=price_from.to_i  && price_from.to_i !=-1 && price_to.to_i !=-1
-        return filter_results.select{|x| x[:price].to_i<=price_to.to_i && x[:price].to_i>=price_from.to_i }
+        return @combine_filter_results.select{|x| x[:price].to_i<=price_to.to_i && x[:price].to_i>=price_from.to_i }
       else
-        return filter_results
+        return @combine_filter_results
       end
     end
 

@@ -4,3 +4,4 @@ require_relative '../lib/stylemooncat.rb'
 
 @scraper = StyleMoonCat::Scraper.new
 puts @scraper.scrape(ARGV[0],ARGV[1],ARGV[2],ARGV[3],ARGV[4])
+#puts @scraper.scrape("shoes",{:keyword=>"none",:page_limit=>3,:price_boundary=>[0,600]})
