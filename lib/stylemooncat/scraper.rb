@@ -2,7 +2,7 @@
 require 'oga'
 require 'open-uri'
 require 'open-uri-s3'
-
+require 'iconv'
 # scrape data
 module StyleMoonCat
   class Scraper
@@ -88,7 +88,11 @@ module StyleMoonCat
     end
 
     def scrape(category,options={})
+      options[:keyword]
+
+    #  keyword= Iconv.conv('big5','utf-8',options[:keyword])
       keyword= options[:keyword]
+      puts "#{keyword}"
       page_limit=options[:page_limit]
       puts options
 
@@ -211,7 +215,7 @@ module StyleMoonCat
 
     private
     def uri_with_keyword(uri, keyword)
-      "#{uri}&keyword=#{keyword}"
+      "#{uri}&keyword=#{URI.escape(keyword)}"
     end
 
     def uri_with_page(uri, page)
