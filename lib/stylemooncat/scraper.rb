@@ -60,7 +60,7 @@ module StyleMoonCat
 
     @@COLOR_ITEM_XPATH = "//option"
 
-    def scrape_contain_color(category,options)
+    def scrape_contain_color(category,options={})
         @@IsScrapeColor=1
         filter_results = scrape(category,options)
         filter_results_with_color = filter_results.each do |x|
@@ -87,7 +87,7 @@ module StyleMoonCat
         item.text.split(" ")[0].split("：")[1]
     end
 
-    def scrape(category,options)
+    def scrape(category,options={})
       keyword= options[:keyword]
       page_limit=options[:page_limit]
       puts options
@@ -266,7 +266,7 @@ module StyleMoonCat
 
     def extract_images(item)
       result=[]
-      result.push(item.xpath(@@IMAGE_XPATH).attribute(:src).first.value)
+      result.push('http://www.stylemooncat.com.tw'+item.xpath(@@IMAGE_XPATH).attribute(:src).first.value)
 
     end
 

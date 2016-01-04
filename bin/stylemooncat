@@ -19,4 +19,3 @@ if ARGV[5]=='color'
 else
   puts @scraper.scrape(ARGV[0],options)
 end
-#puts @scraper.scrape("shoes",{:keyword=>"none",:page_limit=>3,:price_boundary=>[0,600]})
