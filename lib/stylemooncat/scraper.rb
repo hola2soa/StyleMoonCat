@@ -92,9 +92,7 @@ module StyleMoonCat
 
     #  keyword= Iconv.conv('big5','utf-8',options[:keyword])
       keyword= options[:keyword]
-      puts "#{keyword}"
       page_limit=options[:page_limit]
-      puts options
 
       if options[:price_boundary]!= nil && options[:price_boundary].length ==2
           if options[:price_boundary][0].to_i>options[:price_boundary][1].to_i
