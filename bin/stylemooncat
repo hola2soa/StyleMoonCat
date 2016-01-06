@@ -13,7 +13,7 @@ price_boundary.push(ARGV[4])
 options[:keyword]=ARGV[2]
 options[:price_boundary]=price_boundary
 
-puts @scraper.scrape(ARGV[0],ARGV[1],ARGV[2],ARGV[3],ARGV[4],ARGV[5])
+#puts @scraper.scrape(ARGV[0],ARGV[1],ARGV[2],ARGV[3],ARGV[4],ARGV[5])
 if ARGV[5]=='color'
  puts @scraper.scrape_contain_color(ARGV[0],options)
 else

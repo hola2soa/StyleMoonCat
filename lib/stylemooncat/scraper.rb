@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 require 'oga'
 require 'open-uri'
-require 'open-uri-s3'
-require 'iconv'
+
+
 # scrape data
 module StyleMoonCat
   class Scraper
