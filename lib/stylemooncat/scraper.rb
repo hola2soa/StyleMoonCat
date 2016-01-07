@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'oga'
-require 'iconv'
+#require 'iconv'
 require 'open-uri'
 
 # scrape data
@@ -133,9 +133,9 @@ module StyleMoonCat
 
     # Iconv is neccessary here otherwise text is unreadable
     def extract_title(item)
-      ic = Iconv.new('UTF-8','big5')
+    #  ic = Iconv.new('UTF-8','big5')
       raw_title = item.xpath(TITLE_SELECTOR).text
-      ic.iconv(raw_title)
+  #    ic.iconv(raw_title)
     end
 
     # get rid of the NT and convert to integer
