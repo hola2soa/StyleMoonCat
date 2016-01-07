@@ -1,236 +1,127 @@
 #!/usr/bin/env ruby
 require 'oga'
+require 'iconv'
 require 'open-uri'
-
 
 # scrape data
 module StyleMoonCat
+  # extract_data class uses xpath selectors to get attribs
   class Scraper
-  # URI
-    @@BASE_URI = 'http://www.stylemooncat.com.tw'
+    BASE_URL        = 'http://www.stylemooncat.com.tw'
+    BASE_SCRAPE_URL = "#{BASE_URL}/PDList.asp?"
 
-    @@NEW_ARRIVALS_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090001"
-    @@LAST_WEEK_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090002"
-    @@SPECIAL_DISCOUNT_URI = "#{@@BASE_URI}/PDList.asp?recommand=1312090003"
+    SEARCH_URI      = "#{BASE_URL}item1=00"
+    LATEST_URI      = "#{BASE_SCRAPE_URL}recommand=1312090001"
+    POPULAR_URI     = "#{BASE_SCRAPE_URL}/recommand=1312090003"
+    TOPS_URI        = "#{BASE_SCRAPE_URL}p1=01"
+    PANTS_URI       = "#{BASE_SCRAPE_URL}p1=02&p2=01"
+    ACCESSORIES_URI = "#{BASE_SCRAPE_URL}p1=06"
 
-    @@ALL_ITEMS_URI  = "#{@@BASE_URI}/PDList.asp?item1=00"
-    @@TOP_URI  = "#{@@BASE_URI}/PDList.asp?p1=01"
-      @@TOPS_Clothes_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=01"
-      @@TOPS_Tshirt_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=02"
-      @@TOPS_Vest_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=03"
-      @@TOPS_Blouse_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=04"
-      @@TOPS_Knit_URI  = "#{@@BASE_URI}/PDList.asp?p1=01&p2=05"
-    @@BOTTOM_URI = "#{@@BASE_URI}/PDList.asp?p1=02"
-      @@BOTTOM_Pants_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=01"
-      @@BOTTOM_Skirts_URI  = "#{@@BASE_URI}/PDList.asp?p1=02&p2=02"
-    @@OUTER_URI = "#{@@BASE_URI}/PDList.asp?p1=03"
-      @@OUTER_Coat_URI  = "#{@@BASE_URI}/PDList.asp?p1=03&p2=01"
-      @@OUTER_Jacket_URI  = "#{@@BASE_URI}/PDList.asp?p1=03&p2=02"
-      @@OUTER_Knit_URI  = "#{@@BASE_URI}/PDList.asp?p1=03&p2=03"
-      @@OUTER_Vest_URI  = "#{@@BASE_URI}/PDList.asp?p1=03&p2=04"
-    @@DRESS_URI = "#{@@BASE_URI}/PDList.asp?p1=04"
-    @@SHOES_AND_BAGS_URI = "#{@@BASE_URI}/PDList.asp?p1=05"
-      @@SHOES_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=01"
-      @@BAG_URI = "#{@@BASE_URI}/PDList.asp?p1=05&p2=02"
-    @@ACCESSORIES_URI = "#{@@BASE_URI}/PDList.asp?p1=06"
-      @@ACCESSORIES_Watch_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=01"
-      @@ACCESSORIES_Necklace_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=02"
-      @@ACCESSORIES_Ring_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=03"
-      @@ACCESSORIES_Bracelet_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=04"
-      @@ACCESSORIES_Earring_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=05"
-      @@ACCESSORIES_Muffler_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=06"
-      @@ACCESSORIES_Belt_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=07"
-      @@ACCESSORIES_Haircap_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=08"
-      @@ACCESSORIES_Glasses_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=09"
-      @@ACCESSORIES_Socks_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=10"
-      @@ACCESSORIES_Underwear_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=11"
-      @@ACCESSORIES_Others_URI = "#{@@BASE_URI}/PDList.asp?p1=06&p2=12"
-  # Selectors
-    @@ITEM_XPATH      = "//div[contains(@class, 'goodsBox')]/div[contains(@class, 'goodl')]"
-    @@LINK_XPATH      = 'a'
-    @@IMAGE_XPATH    = "a/img"
-    @@TITLE_XPATH     = "div[contains(@class, 'pd_info_l')]"    # /div[contains(@class, 'pd_info_l')]   is wrong
-    @@PRICE_SPAN_XPATH    = "div[contains(@class, 'pd_info_l')]/span"
-    @@PRICE_STRIKE_XPATH    = "div[contains(@class, 'pd_info_l')]/strike"
+    # xml selectors that will be used to scrape data
+    ITEM_SELECTOR   = "//div[@class='goodsBox']/div[@class='goodl']"
+    TITLE_SELECTOR  = "div[@class='pd_info_l']//text()[not(parent::span)]"
+    IMAGE_SELECTOR  = "a/img/@src"
+    PRICE_SELECTOR  = "div[@class='pd_info_l']/span//text()[not(parent::strike)]"
+    LINK_SELECTOR   = "a/@href"
 
-    # Regular ?
-    @@TITLE_REGEX = /([．\p{Han}[a-zA-Z]]+)/
-
-    @@IsScrpeColor=0;
-
-    @@COLOR_ITEM_XPATH = "//option"
-
-    def scrape_contain_color(category,options={})
-        @@IsScrapeColor=1
-        filter_results = scrape(category,options)
-        filter_results_with_color = filter_results.each do |x|
-          #  puts x[:link]
-            body = fetch_data(x[:link])
-            color = color_extract(body)
-            x[:colors]=  color
-        end
-
-        return filter_results_with_color
+    def latest(page, options = {})
+      uri  = uri_with_options(build_uri(LATEST_URI, options), page)
+      process_request(uri, options)
     end
 
-    def color_extract(raw)
-    #  puts Oga.parse_html(raw).xpath(@@ITEM_XPATH).map { |item| parse(item) }
-      result = Oga.parse_html(raw)
-         .xpath(@@COLOR_ITEM_XPATH)
-         .select { |item| item.text.length >4  }
-         .map { |item| color_parse(item) }
-         .uniq
-      return result
+    def popular(page, options = {})
+      uri  = uri_with_options(build_uri(POPULAR_URI, options), page)
+      process_request(uri, options)
     end
 
-    def color_parse(item)
-        item.text.split(" ")[0].split("：")[1]
+    def tops(page, options = {})
+      uri  = uri_with_options(build_uri(TOPS_URI, options), page)
+      process_request(uri, options)
     end
 
-    def scrape(category,options={})
-      options[:keyword]
-
-    #  keyword= Iconv.conv('big5','utf-8',options[:keyword])
-      keyword= options[:keyword]
-      page_limit=options[:page_limit]
-
-      if options[:price_boundary]!= nil && options[:price_boundary].length ==2
-          if options[:price_boundary][0].to_i>options[:price_boundary][1].to_i
-              price_from = options[:price_boundary][1]
-              price_to = options[:price_boundary][0]
-          else
-              price_from = options[:price_boundary][0]
-              price_to = options[:price_boundary][1]
-          end
-      else
-          price_from = -1
-          price_to = -1
-      end
-      @filter_results=[]
-      @count=1
-      1.upto(page_limit.to_i) do
-        page =  @count
-        case category
-        when "newarrival"
-              uri  = uri_with_page(@@NEW_ARRIVALS_URI, page)
-        when "lastweek"
-              uri  = uri_with_page(@@LAST_WEEK_URI, page)
-        when "specialdiscount"
-              uri  = uri_with_page(@@SPECIAL_DISCOUNT_URI, page)
-        when "top"
-              uri  = uri_with_page(@@TOP_URI, page)
-            when "top_clothes"
-                  uri  = uri_with_page(@@TOPS_Clothes_URI, page)
-            when "top_Tshirt"
-                  uri  = uri_with_page(@@TOPS_Tshirt_URI, page)
-            when "top_vest"
-                  uri  = uri_with_page(@@TOPS_Vest_URI, page)
-            when "top_blouse"
-                  uri  = uri_with_page(@@TOPS_Blouse_URI, page)
-            when "top_knit"
-                  uri  = uri_with_page(@@TOPS_Knit_URI, page)
-        when "bottom"
-              uri  = uri_with_page(@@BOTTOM_URI, page)
-            when "bottom_pants"
-                  uri  = uri_with_page(@@BOTTOM_Pants_URI, page)
-            when "bottom_skirts"
-                  uri  = uri_with_page(@@BOTTOM_Skirts_URI, page)
-        when "outer"
-              uri  = uri_with_page(@@OUTER_URI, page)
-            when "outer_coat"
-                  uri  = uri_with_page(@@OUTER_Coat_URI, page)
-            when "outer_jacket"
-                  uri  = uri_with_page(@@OUTER_Jacket_URI, page)
-            when "outer_knit"
-                  uri  = uri_with_page(@@OUTER_Knit_URI, page)
-            when "outer_vest"
-                  uri  = uri_with_page(@@OUTER_Vest_URI, page)
-
-        when "dress"
-              uri  = uri_with_page(@@DRESS_URI, page)
-        when "shoes_and_bag"
-              uri  = uri_with_page(@@SHOES_AND_BAGS_URI, page)
-            when "shoes"
-                  uri  = uri_with_page(@@SHOES_URI, page)
-            when "bag"
-                  uri  = uri_with_page(@@BAG_URI, page)
-        when "accessories"
-              uri  = uri_with_page(@@ACCESSORIES_URI, page)
-            when "accessories_watch"
-                  uri  = uri_with_page(@@ACCESSORIES_Watch_URI, page)
-            when "accessories_necklace"
-                  uri  = uri_with_page(@@ACCESSORIES_Necklace_URI, page)
-            when "accessories_ring"
-                  uri  = uri_with_page(@@ACCESSORIES_Ring_URI, page)
-            when "accessories_bracelet"
-                  uri  = uri_with_page(@@ACCESSORIES_Bracelet_URI, page)
-            when "accessories_earring"
-                  uri  = uri_with_page(@@ACCESSORIES_Earring_URI, page)
-            when "accessories_muffler"
-                  uri  = uri_with_page(@@ACCESSORIES_Muffler_URI, page)
-            when "accessories_belt"
-                  uri  = uri_with_page(@@ACCESSORIES_Belt_URI, page)
-            when "accessories_haircap"
-                  uri  = uri_with_page(@@ACCESSORIES_Haircap_URI, page)
-            when "accessories_glasses"
-                uri  = uri_with_page(@@ACCESSORIES_Glasses_URI, page)
-            when "accessories_socks"
-                uri  = uri_with_page(@@ACCESSORIES_Socks_URI, page)
-            when "accessories_underwear"
-                uri  = uri_with_page(@@ACCESSORIES_Underwear_URI, page)
-            when "accessories_others"
-                uri  = uri_with_page(@@ACCESSORIES_Others_URI, page)
-        else
-              uri  = uri_with_page(@@ALL_ITEMS_URI, page)
-        end
-
-        if (keyword != "none") &&  (keyword != nil)
-            uri = uri_with_keyword(uri,keyword)
-        end
-      #  puts uri
-        body = fetch_data(uri)
-        @filter_results  = filter(body)
-
-        if @count==1
-            @combine_filter_results = @filter_results
-            @count +=1
-        else
-          if @filter_results.length>0
-            @combine_filter_results=  @final_filter_results.concat(@filter_results)
-          end
-        end
-      end
-      @count=1
-
-      #filter with price if there are correct price parameters
-      if price_to!=nil && price_from!=nil && price_to.to_i >=price_from.to_i  && price_from.to_i !=-1 && price_to.to_i !=-1
-        return @combine_filter_results.select{|x| x[:price].to_i<=price_to.to_i && x[:price].to_i>=price_from.to_i }
-      else
-        return @combine_filter_results
-      end
+    def pants(page, options = {})
+      uri  = uri_with_options(build_uri(PANTS_URI, options), page)
+      process_request(uri, options)
     end
 
+    def accessories(page, options = {})
+      uri  = uri_with_options(build_uri(ACCESSORIES_URI, options), page)
+      process_request(uri, options)
+    end
+
+    def search(page, options = {})
+      uri  = uri_with_options(build_uri(BASE_SCRAPE_URL, options), page)
+      process_request(uri, options)
+    end
+
+    def scrape(type, options = {})
+      records = []
+      valid_args = [:tops, :popular, :pants, :pants,
+        :accessories, :latest, :search]
+      abort 'invalid parameter - scrape type' unless valid_args.include?(type.to_sym)
+      scrape_what(type, options)
+    end
 
     private
-    def uri_with_keyword(uri, keyword)
-      "#{uri}&keyword=#{URI.escape(keyword)}"
+
+    def process_request(uri, options)
+      body = open_uri(uri)
+      data = extract_data(body)
+      filter(data, options)
     end
 
-    def uri_with_page(uri, page)
-      "#{uri}&pageno=#{page}"
+    # filter by price if the options are not empty
+    def filter(data, options)
+      results = data
+      unless options.empty?
+        results = match_price(results, options[:price_boundary]) if options[:price_boundary]
+      end
+      results
     end
 
-    def fetch_data(uri)
+    # do the actual extraction of prices from the result set
+    def match_price(data, boundary)
+      lower_bound = boundary.first || 0
+      upper_bound = boundary.last  || Float::INFINITY
+
+      data.select { |item| lower_bound <= item[:price] && item[:price] <= upper_bound }
+    end
+
+    def build_uri(uri, options = {})
+      opts = { uri: uri }
+      unless options.empty?
+        opts[:keyword] = options[:keyword] if options[:keyword]
+      end
+      opts
+    end
+
+    def uri_with_options(options = {}, page)
+      uri = ''
+      unless options.empty?
+        kw = options[:keyword] || nil
+        #ic = Iconv.new('big5','UTF-8')
+        keyword = kw
+        uri << "#{options[:uri]}&pageno=#{page}" if options[:uri]
+        uri << "br=X&keyword=#{URI.escape(keyword)}" if options[:keyword]
+      end
+      uri
+    end
+
+    # try open the URL, fail on error
+    def open_uri(uri)
       open(uri) {|file| file.read}
+    rescue StandardError
+      'error opening site url'
     end
 
-    def filter(raw)
-    #  puts Oga.parse_html(raw).xpath(@@ITEM_XPATH).map { |item| parse(item) }
+    # iterate over every element of item using xpath
+    def extract_data(raw)
       Oga.parse_html(raw)
-         .xpath(@@ITEM_XPATH)
+         .xpath(ITEM_SELECTOR)
          .map { |item| parse(item) }
     end
 
+    # call methods to extract the data using xpath
     def parse(item)
       {
         title:  extract_title(item),
@@ -240,40 +131,42 @@ module StyleMoonCat
       }
     end
 
+    # Iconv is neccessary here otherwise text is unreadable
     def extract_title(item)
-        item.xpath(@@TITLE_XPATH).text.split("TWD")[0]
+      ic = Iconv.new('UTF-8','big5')
+      raw_title = item.xpath(TITLE_SELECTOR).text
+      ic.iconv(raw_title)
     end
 
+    # get rid of the NT and convert to integer
     def extract_price(item)
-
-      # if there is discount, priceString format is "originPirce sellingPrice"
-      # .split(' ') is fail. so use this method to extract sellingPrice
-      priceString = item.xpath(@@TITLE_XPATH).text.split("TWD.")[1]
-      length = priceString.length
-      if length ==8 || length ==9  #ex: priceString ==  "1200 990"   or "1200 1100"
-          space = priceString[4]
-          result = priceString.split(space)[1]
-      elsif length ==7 || length ==6 #ex: priceString == "999 990"  or   "120 99"
-          space = priceString[3]
-          result = priceString.split(space)[1]
-      elsif length ==5 #ex: priceString == "99 90"
-            space = priceString[2]
-            result = priceString.split(space)[1]
-      else #no discount
-            result = priceString
-      end
-
-      result
+      price_str = item.xpath(PRICE_SELECTOR).text
+      price_str.sub(/TWD./, '').gsub("\u00a0", ' ').to_i
     end
 
+    # extract two images and return array or urls
     def extract_images(item)
-      result=[]
-      result.push('http://www.stylemooncat.com.tw'+item.xpath(@@IMAGE_XPATH).attribute(:src).first.value)
-
+      image       = item.xpath(IMAGE_SELECTOR).text
+      # image_hover = image.sub(/\.jpg/, '-h.jpg')
+      # image_hover = image.sub(/\.png/, '-h.png') unless image_hover != image
+      ["#{BASE_URL}#{image}"]
     end
 
+    # get the link to the item
     def extract_link(item)
-      "#{@@BASE_URI}/#{item.xpath(@@LINK_XPATH).attribute(:href).first.value}"
+      "#{BASE_URL}/#{item.xpath(LINK_SELECTOR).text}"
+    end
+
+    def scrape_what(type, options)
+      records = []
+      pl = options[:page_limit].to_i
+      page_limit = pl != 0 ? pl : 5
+
+      1.upto(page_limit) do |page|
+        method = self.method(type)
+        records.push(method.call(page, options))
+      end
+      records.reject { |c| c.empty? }.flatten(1).uniq
     end
   end
 end
