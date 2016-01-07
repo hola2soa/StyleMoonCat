@@ -1,25 +1,35 @@
 #!/usr/bin/env ruby
-
-require_relative '../lib/stylemooncat.rb'
+# require 'queenshop' # for production
+require_relative '../lib/stylemooncat'
 
 @scraper = StyleMoonCat::Scraper.new
-options ={}
-options[:page_limit]=ARGV[1]
 
-price_boundary=[]
-price_boundary.push(ARGV[3])
-price_boundary.push(ARGV[4])
+# command type keyword lprice hprice page_limit
+def parse_args argv
+  input_length = argv.length
+  abort 'invalid usage' unless input_length <= 5
 
-options[:keyword]=ARGV[2]
-options[:price_boundary]=price_boundary
-
-#puts @scraper.scrape(ARGV[0],ARGV[1],ARGV[2],ARGV[3],ARGV[4],ARGV[5])
-if ARGV[5]=='color'
- puts @scraper.scrape_contain_color(ARGV[0],options)
-else
-  puts @scraper.scrape(ARGV[0],options)
+  if input_length == 0  # scrape main category
+    @scraper.scrape('latest')
+  elsif input_length == 1  # scrape main category
+    @scraper.scrape(argv[0])
+  elsif input_length == 2
+    t = argv[1].to_i
+    if t != 0
+      options = { page_limit: argv[1] }
+    else
+      options = { keyword: argv[1] }
+    end
+    @scraper.scrape(argv[0], options)
+  elsif input_length == 3
+    options = { keyword: argv[1], page_limit: argv[2] }
+    @scraper.scrape(argv[0], options)
+  elsif input_length == 5
+    options = { keyword: argv[2], page_limit: argv[5],
+      price_boundary: [argv[3], argv[4]]
+    }
+    @scraper.scrape_filter(argv[0], options)
+  end
 end
 
-#puts @scraper.scrape("shoes",{:keyword=>"none",:page_limit=>3,:price_boundary=>[0,600]})
-#puts '-----------'
-#puts @scraper.scrape("shoes",{:keyword=>"跟鞋",:page_limit=>1})
+puts parse_args ARGV
