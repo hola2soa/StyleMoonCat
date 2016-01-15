@@ -4,7 +4,7 @@ This is a scraper library about to scraping http://www.stylemooncat.com.tw/
 StyleMoonCat is an ecommerce website selling women clothing but does not have a public api.
 This API allows the scrapping of the site to extract the title ,price,images,link of product webpage , of items sold.
 
-Note that StyleMoonCat does not have a robots.txt. checked on(Dec 26, 2015)
+Note that StyleMoonCat does not have a robots.txt. checked on(Dec 10, 2015)
 
 ## Usage
 
@@ -51,4 +51,3 @@ The result of format is like:
 {:title=>"尖頭繫帶粗跟鞋*4色", :price=>"540", :images=>["http://www.stylemooncat.com.tw/photo/09050015/09050015.jpg"], :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24731"},
 {:title=>"磨砂材質懶人鞋*2色", :price=>"590", :images=>["http://www.stylemooncat.com.tw/photo/09010016/09010016.jpg"], :link=>"http://www.stylemooncat.com.tw/PDContent.asp?yano=24820"}]
 ````
-
