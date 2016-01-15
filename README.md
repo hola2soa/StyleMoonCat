@@ -29,7 +29,7 @@ $ stylemooncat popular "Christmas" 400 500 2 # scrape 2 popular pages price 400 
 If you want to use it in your library:
 ```ruby
 require 'stylemooncat'
-scraper = StyleMoonCatScraper::Filter.new
+scraper = StyleMoonCat::Scraper.new
 results = scraper.latest(1)
 ```
 The following functions are available:
